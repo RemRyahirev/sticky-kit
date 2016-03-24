@@ -14,12 +14,14 @@ $.fn.stick_in_parent = (opts={}) ->
     offset_top
     spacer: manual_spacer
     bottoming: enable_bottoming
+    scroll_object: scroll_object
   } = opts
 
   offset_top ?= 0
   parent_selector ?= undefined
   inner_scrolling ?= true
   sticky_class ?= "is_stuck"
+  scroll_object = if scroll_object then $ scroll_object else win
 
   doc = $(document)
 
@@ -126,7 +128,7 @@ $.fn.stick_in_parent = (opts={}) ->
           recalc()
           recalced = true
 
-        scroll = win.scrollTop()
+        scroll = scroll_object.scrollTop()
         if last_pos?
           delta = scroll - last_pos
         last_pos = scroll
@@ -164,7 +166,7 @@ $.fn.stick_in_parent = (opts={}) ->
 
           # updated offset
           if inner_scrolling
-            win_height = win.height()
+            win_height = scroll_object.height()
             if height + offset_top > win_height # bigger than viewport
               unless bottomed
                 offset -= delta
@@ -226,9 +228,9 @@ $.fn.stick_in_parent = (opts={}) ->
 
       detach = ->
         detached = true
-        win.off "touchmove", tick
-        win.off "scroll", tick
-        win.off "resize", recalc_and_tick
+        scroll_object.off "touchmove", tick
+        scroll_object.off "scroll", tick
+        scroll_object.off "resize", recalc_and_tick
 
         $(document.body).off "sticky_kit:recalc", recalc_and_tick
         elm.off "sticky_kit:detach", detach
@@ -251,9 +253,9 @@ $.fn.stick_in_parent = (opts={}) ->
 
           elm.removeClass sticky_class
 
-      win.on "touchmove", tick
-      win.on "scroll", tick
-      win.on "resize", recalc_and_tick
+      scroll_object.on "touchmove", tick
+      scroll_object.on "scroll", tick
+      scroll_object.on "resize", recalc_and_tick
       $(document.body).on "sticky_kit:recalc", recalc_and_tick
       elm.on "sticky_kit:detach", detach
 
