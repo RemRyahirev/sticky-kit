@@ -1,5 +1,7 @@
 # Sticky-kit
 
+RemRyahirev's version
+
 A jQuery plugin for making smart sticky elements.
 
 See the homepage for directions and examples: <http://leafo.net/sticky-kit/>
