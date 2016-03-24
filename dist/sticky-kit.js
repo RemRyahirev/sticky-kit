@@ -12,12 +12,34 @@
   win = $(window);
 
   $.fn.stick_in_parent = function(opts) {
-    var doc, elm, enable_bottoming, inner_scrolling, manual_spacer, offset_top, outer_width, parent_selector, recalc_every, sticky_class, _fn, _i, _len;
+    var doc,
+        elm,
+        enable_bottoming,
+        inner_scrolling,
+        manual_spacer,
+        offset_top,
+        outer_width,
+        parent_selector,
+        recalc_every,
+        sticky_class,
+        scroll_object,
+        _fn,
+        _i,
+        _len;
 
     if (opts == null) {
       opts = {};
     }
-    sticky_class = opts.sticky_class, inner_scrolling = opts.inner_scrolling, recalc_every = opts.recalc_every, parent_selector = opts.parent, offset_top = opts.offset_top, manual_spacer = opts.spacer, enable_bottoming = opts.bottoming;
+
+    sticky_class     = opts.sticky_class;
+    inner_scrolling  = opts.inner_scrolling;
+    recalc_every     = opts.recalc_every;
+    parent_selector  = opts.parent;
+    offset_top       = opts.offset_top;
+    manual_spacer    = opts.spacer;
+    enable_bottoming = opts.bottoming;
+    scroll_object    = opts.scroll_object ? $(opts.scroll_object) : win;
+
     if (offset_top == null) {
       offset_top = 0;
     }
@@ -139,7 +161,7 @@
           recalc();
           recalced = true;
         }
-        scroll = win.scrollTop();
+        scroll = scroll_object.scrollTop();
         if (last_pos != null) {
           delta = scroll - last_pos;
         }
@@ -173,7 +195,7 @@
             elm.css(css).removeClass(sticky_class).trigger("sticky_kit:unstick");
           }
           if (inner_scrolling) {
-            win_height = win.height();
+            win_height = scroll_object.height();
             if (height + offset_top > win_height) {
               if (!bottomed) {
                 offset -= delta;
@@ -230,9 +252,9 @@
       };
       detach = function() {
         detached = true;
-        win.off("touchmove", tick);
-        win.off("scroll", tick);
-        win.off("resize", recalc_and_tick);
+        scroll_object.off("touchmove", tick);
+        scroll_object.off("scroll", tick);
+        scroll_object.off("resize", recalc_and_tick);
         $(document.body).off("sticky_kit:recalc", recalc_and_tick);
         elm.off("sticky_kit:detach", detach);
         elm.removeData("sticky_kit");
@@ -253,9 +275,9 @@
           return elm.removeClass(sticky_class);
         }
       };
-      win.on("touchmove", tick);
-      win.on("scroll", tick);
-      win.on("resize", recalc_and_tick);
+      scroll_object.on("touchmove", tick);
+      scroll_object.on("scroll", tick);
+      scroll_object.on("resize", recalc_and_tick);
       $(document.body).on("sticky_kit:recalc", recalc_and_tick);
       elm.on("sticky_kit:detach", detach);
       return setTimeout(tick, 0);
